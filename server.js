@@ -10,13 +10,14 @@ app.use("/api", api);
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
-  res.send("Hello, World!");
+	res.send("Hello, World!");
 });
 
 app.listen(port, () => {
-  console.log(`server listening at http://localhost:${port}`);
+	console.log(`server listening at http://localhost:${port}`);
 });
 
 function logger(req, res, next) {
-  console.log(`[${req.method}] ${req.url}`);
+	console.log(`[${req.method}] ${req.url}`);
+	next();
 }
