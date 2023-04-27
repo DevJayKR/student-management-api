@@ -1,8 +1,11 @@
 const express = require("express");
 const router = express.Router();
+const controller = require("./admin.controller");
 
-router.get("/", (req, res) => {
-  res.send("admin api");
+router.post("/", async (req, res) => {
+	const { username, password } = req.body;
+
+	res.send(await controller.generateAdmin({ username, password }));
 });
 
 module.exports = router;
