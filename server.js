@@ -4,10 +4,10 @@ require("dotenv").config();
 const port = process.env.SERVER_PORT || 5000;
 const api = require("./src/api/router");
 
+app.use(express.urlencoded({ extended: true }));
 app.use(logger);
 
 app.use("/api", api);
-app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
 	res.send("Hello, World!");
