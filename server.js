@@ -1,8 +1,7 @@
 const express = require("express");
-const app = express();
-const dotenv = require('dotenv');
-const port = process.env.SERVER_PORT
 const api = require("./src/api/router");
+const { port } = require('./src/api/config');
+const app = express();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(logger);
