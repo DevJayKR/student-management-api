@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
-require("dotenv").config();
-const port = process.env.SERVER_PORT || 5000;
+const dotenv = require('dotenv');
+const port = process.env.SERVER_PORT
 const api = require("./src/api/router");
 
 app.use(express.urlencoded({ extended: true }));
