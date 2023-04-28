@@ -6,8 +6,7 @@ module.exports = class SchoolService {
 	schools = [];
 	id = 1;
 
-	async createSchool(school_id, school_name, school_email) {
-		const dto = [school_id, school_name, school_email];
+	async createSchool(dto) {
 		return model.create(dto);
 	}
 

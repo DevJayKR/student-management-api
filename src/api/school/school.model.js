@@ -17,7 +17,7 @@ module.exports = {
 
     create: async (dto) => {
         const sql = 'INSERT INTO school VALUES(?,?,?)';
-        const params = dto;
+        const params = [dto];
         const data = await pool.execute(sql);
         return data[0];
     },
