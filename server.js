@@ -2,11 +2,18 @@ const express = require("express");
 const api = require("./src/api/router");
 const { port } = require("./src/api/config");
 const { logger } = require("./src/api/common/middlewares/logger");
+const passport = require("passport");
+const passportConfig = require("./src/api/passport");
+const cookieParser = require("cookie-parser");
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use(logger);
+
+app.use(passport.initialize());
+passportConfig();
 
 app.use("/api", api);
 
