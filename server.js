@@ -1,6 +1,6 @@
 const express = require("express");
 const api = require("./src/api/router");
-const { port } = require('./src/api/config');
+const { port } = require("./src/api/config");
 const app = express();
 
 app.use(express.json());
