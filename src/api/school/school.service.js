@@ -1,50 +1,38 @@
-const { ulid } = require("ulid");
+const model = require('./school.model');
 
 module.exports = class SchoolService {
-	//TODO: DATABASE 연결해서 생성
-	schools = [];
-	id = 1;
 
-	async createSchool({ schoolName, username, password }) {
-		const school = {
-			id: this.id++,
-			schoolName,
-			username,
-			password,
-			authCode: ulid(),
-		};
-
-		this.schools.push(school);
-
-		return school;
+	/**
+	 * 
+	 * @param {object} dto school_name,school_email 
+	 * @returns 
+	 */
+	async createSchool(dto) {
+		return await model.create(dto);
 	}
 
 	async findAllSchool() {
-		return this.schools;
+		return await model.find();
 	}
 
-	findOneSchool(id) {
-		return this.schools.find((school) => school.id === id);
+	async findOneSchool(school_id) {
+		return await model.findbyId(school_id);
 	}
 
-	findSchoolIndex(id) {
-		return this.schools.findIndex((school) => school.id === id);
-	}
+	async deleteSchool(school_id) {
+		const index = await this.findOneSchool(school_id);
 
-	deleteSchool(id) {
-		const index = this.findSchoolIndex(id);
-
-		if (index === -1) {
+		if (index.length === 0) {
 			return {
 				success: false,
 				message: "존재하지 않는 학교 아이디입니다.",
 			};
 		}
 
-		const school = this.findOneSchool(id);
+		return await model.delete(school_id);
+	}
 
-		this.schools.pop(index);
-
-		return school;
+	async update(dto) {
+		return await model.update(dto);
 	}
 };

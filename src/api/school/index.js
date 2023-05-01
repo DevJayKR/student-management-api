@@ -1,31 +1,40 @@
 const express = require("express");
 const router = express.Router();
+const controller = require('./school.controller');
 
-router.get("/", async (req, res) => res.send(await controller.findAllSchool()));
+router.get("/all", async (req, res) => res.send(await controller.findAllSchool()));
 
-router.get("/:id", (req, res) => {
-	const { id } = req.params;
-	res.send(controller.findOneSchool(id));
+router.get("/", async (req, res) => {
+    const { school_id } = req.query;
+    res.send(await controller.findOneSchool(school_id));
 });
 
 router.post("/", async (req, res) => {
-	const { schoolName, username, password } = req.body;
+    const { school_name, school_email } = req.body;
+    const dto = {
+        school_name,
+        school_email
+    };
 
-	const dto = {
-		schoolName,
-		username,
-		password,
-	};
-
-	const school = await controller.createSchool(dto);
-
-	res.send(school);
+    res.send(await controller.createSchool(dto));
 });
 
-router.delete("/:id", (req, res) => {
-	const { id } = req.params;
+router.delete("/", async (req, res) => {
+    const { school_id } = req.query;
 
-	res.send(controller.deleteSchool(id));
+    res.send(await controller.deleteSchool(school_id));
 });
+
+router.put("/", async (req, res) => {
+    const { school_id } = req.query;
+    const { school_name } = req.body;
+
+    const dto = {
+        school_id,
+        school_name
+    }
+
+    res.send(await controller.updateSchool(dto));
+})
 
 module.exports = router;
