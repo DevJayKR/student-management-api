@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const controller = require("./users.controller");
-const validator = require("../common/validator");
+const validator = require("../common/middlewares/validator");
 const { createSchema } = require("./users.schemas");
 
 router.get("/", async (req, res) => {

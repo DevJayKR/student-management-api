@@ -1,5 +1,5 @@
 const Joi = require("joi");
-const response = require("../common/response");
+const response = require("../response");
 const validator = (schema, property) => {
 	return (req, res, next) => {
 		const { error } = schema.validate(req.body);

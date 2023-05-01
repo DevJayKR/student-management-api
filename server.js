@@ -1,6 +1,7 @@
 const express = require("express");
 const api = require("./src/api/router");
 const { port } = require("./src/api/config");
+const { logger } = require("./src/api/common/middlewares/logger");
 const app = express();
 
 app.use(express.json());
@@ -16,8 +17,3 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
 	console.log(`server listening at http://localhost:${port}`);
 });
-
-function logger(req, res, next) {
-	console.log(`[${req.method}] ${req.url}`);
-	next();
-}
