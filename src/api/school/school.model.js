@@ -9,22 +9,29 @@ module.exports = {
     },
 
     findbyId: async (school_id) => {
-        const sql = 'SELCET * FROM school where school_id = ?';
+        const sql = 'SELECT * FROM school where school_id = ?';
         const params = [school_id];
         const data = await pool.execute(sql, params);
         return data[0];
     },
 
     create: async (dto) => {
-        const sql = 'INSERT INTO school VALUES(?,?,?)';
-        const params = [dto];
-        const data = await pool.execute(sql);
+        const sql = 'INSERT INTO school VALUES(0,?,?)';
+        const params = [dto.school_name, dto.school_email];
+        const data = await pool.execute(sql, params);
         return data[0];
     },
 
     delete: async (school_id) => {
         const sql = 'DELETE from school where school_id = ?'
         const params = [school_id];
+        const data = await pool.execute(sql, params);
+        return data[0];
+    },
+
+    update: async (dto) => {
+        const sql = 'UPDATE school set school_name = ? where school_id = ?';
+        const params = [dto.school_name, dto.school_id];
         const data = await pool.execute(sql, params);
         return data[0];
     }
