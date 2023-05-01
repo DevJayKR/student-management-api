@@ -2,38 +2,39 @@ const express = require("express");
 const router = express.Router();
 const controller = require('./school.controller');
 
-//1 안
-// router.get("/", async (req, res) => res.send(await controller.findAllSchool()));
+router.get("/all", async (req, res) => res.send(await controller.findAllSchool()));
 
-// router.get("/:id", (req, res) => {
-// 	const { id } = req.params;
-// 	res.send(controller.findOneSchool(id));
-// });
+router.get("/", async (req, res) => {
+    const { school_id } = req.query;
+    res.send(await controller.findOneSchool(school_id));
+});
 
-// router.post("/", async (req, res) => {
-// 	const { schoolName, username, password } = req.body;
+router.post("/", async (req, res) => {
+    const { school_name, school_email } = req.body;
+    const dto = {
+        school_name,
+        school_email
+    };
 
-// 	const dto = {
-// 		schoolName,
-// 		username,
-// 		password,
-// 	};
+    res.send(await controller.createSchool(dto));
+});
 
-// 	const school = await controller.createSchool(dto);
+router.delete("/", async (req, res) => {
+    const { school_id } = req.query;
 
-// 	res.send(school);
-// });
+    res.send(await controller.deleteSchool(school_id));
+});
 
-// router.delete("/:id", (req, res) => {
-// 	const { id } = req.params;
+router.put("/", async (req, res) => {
+    const { school_id } = req.query;
+    const { school_name } = req.body;
 
-// 	res.send(controller.deleteSchool(id));
-// });
+    const dto = {
+        school_id,
+        school_name
+    }
 
-//2안
-
-router.get('/all', controller.findAllSchool);
-router.get('/', controller.findOneSchool);
-router.post('/', controller.createSchool);
+    res.send(await controller.updateSchool(dto));
+})
 
 module.exports = router;
