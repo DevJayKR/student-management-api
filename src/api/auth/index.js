@@ -17,7 +17,7 @@ router.post("/login", validator(loginSchema), localAuth, (req, res) => {
 
 	res.cookie("access", user.accessToken, { httpOnly: true, maxAge: JWT_ACCESS_EXPIRATION_TIME });
 	res.cookie("refresh", user.refreshToken, { httpOnly: true, maxAge: JWT_REFRESH_EXPIRATION_TIME });
-	res.redirect("/");
+	res.send(user);
 });
 
 router.post("/logout", (req, res) => {
