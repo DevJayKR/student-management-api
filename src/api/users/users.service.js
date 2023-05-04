@@ -1,21 +1,21 @@
 const model = require("./users.model");
 
 module.exports = class UsersService {
-	async generateAdmin({ username, password }) {
-		await model.generateAdmin({ username, password });
-		const newAdmin = await model.getUserByUsername({ username });
+	async generateAdmin({ email, password }) {
+		await model.generateAdmin({ email, password });
+		const newAdmin = await model.getUserByEmail({ email });
 		newAdmin.password = undefined;
 
 		return newAdmin;
 	}
 
-	async createUser({ username, password }) {
-		await model.createUser({ username, password });
-		return await this.getUserByUsername({ username });
+	async createUser({ email, password }) {
+		await model.createUser({ email, password });
+		return await this.getUserByEmail({ email });
 	}
 
-	async getUserByUsername({ username }) {
-		const user = await model.getUserByUsername({ username });
+	async getUserByEmail({ email }) {
+		const user = await model.getUserByEmail({ email });
 		return user;
 	}
 

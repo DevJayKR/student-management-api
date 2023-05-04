@@ -5,9 +5,9 @@ const validator = require("../common/middlewares/validator");
 const { createSchema } = require("./users.schemas");
 
 router.get("/", async (req, res) => {
-	if (req.query.username) {
-		const { username } = req.query;
-		const user = await controller.getUserByUsername({ username });
+	if (req.query.email) {
+		const { email } = req.query;
+		const user = await controller.getUserByEmail({ email });
 		res.send(user);
 	} else if (req.query.id) {
 		const { id } = req.query;
@@ -20,13 +20,13 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/private/generateAdmin", validator(createSchema), async (req, res) => {
-	const { username, password } = req.body;
-	res.send(await controller.generateAdmin({ username, password }));
+	const { email, password } = req.body;
+	res.send(await controller.generateAdmin({ email, password }));
 });
 
 router.post("/", validator(createSchema), async (req, res) => {
-	const { username, password } = req.body;
-	const user = await controller.createUser({ username, password });
+	const { email, password } = req.body;
+	const user = await controller.createUser({ email, password });
 	res.send(user);
 });
 

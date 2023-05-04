@@ -7,28 +7,28 @@ module.exports = {
 		return await Service.getUsers();
 	},
 
-	generateAdmin: async ({ username, password }) => {
+	generateAdmin: async ({ email, password }) => {
 		try {
-			const newAdmin = await Service.generateAdmin({ username, password });
+			const newAdmin = await Service.generateAdmin({ email, password });
 			return response.success("어드민 생성 성공", {
 				newAdmin,
 			});
 		} catch (error) {
-			if (error.errno === 1062) return response.fail("이미 사용중인 유저네임입니다.");
+			if (error.errno === 1062) return response.fail("이미 사용중인 이메일입니다.");
 		}
 	},
 
-	createUser: async ({ username, password }) => {
+	createUser: async ({ email, password }) => {
 		try {
-			const newUser = await Service.createUser({ username, password });
+			const newUser = await Service.createUser({ email, password });
 			return response.success("회원가입 성공", newUser);
 		} catch (error) {
-			if (error.errno === 1062) return response.fail("이미 사용중인 유저네임입니다.");
+			if (error.errno === 1062) return response.fail("이미 사용중인 이메일입니다.");
 		}
 	},
 
-	getUserByUsername: async ({ username }) => {
-		return await Service.getUserByUsername({ username });
+	getUserByEmail: async ({ email }) => {
+		return await Service.getUserByEmail({ email });
 	},
 
 	getUserById: async ({ id }) => {

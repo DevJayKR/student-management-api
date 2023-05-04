@@ -4,31 +4,31 @@ const response = require("../common/response");
 
 module.exports = {
 	getUsers: async () => {
-		const sql = `SELECT id, username, role_id, school_id FROM users`;
+		const sql = `SELECT id, email, role_id, school_id FROM users`;
 		const result = await pool.execute(sql);
 
 		return result[0];
 	},
 
-	generateAdmin: async ({ username, password }) => {
+	generateAdmin: async ({ email, password }) => {
 		const hashedPassword = await bcrpyt.hash(password, 10);
-		const params = [username, hashedPassword, 5];
-		const sql = `INSERT INTO users(username, password, role_id) VALUES(?,?,?)`;
+		const params = [email, hashedPassword, 5];
+		const sql = `INSERT INTO users(email, password, role_id) VALUES(?,?,?)`;
 
 		await pool.execute(sql, params);
 	},
 
-	createUser: async ({ username, password }) => {
+	createUser: async ({ email, password }) => {
 		const hashedPassword = await bcrpyt.hash(password, 10);
-		const params = [username, hashedPassword];
-		const sql = `INSERT INTO users(username, password) VALUES(?,?)`;
+		const params = [email, hashedPassword];
+		const sql = `INSERT INTO users(email, password) VALUES(?,?)`;
 
 		await pool.execute(sql, params);
 	},
 
-	getUserByUsername: async ({ username }) => {
-		const sql = `SELECT * FROM users where username = ?`;
-		const params = [username];
+	getUserByEmail: async ({ email }) => {
+		const sql = `SELECT * FROM users where email = ?`;
+		const params = [email];
 
 		const result = await pool.execute(sql, params);
 		return result[0][0];

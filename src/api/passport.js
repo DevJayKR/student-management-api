@@ -12,36 +12,41 @@ const { JWT_ACCESS_SECRET, JWT_REFRESH_SECRET } = process.env;
 module.exports = () => {
 	passport.use(
 		"local",
-		new LocalStrategy(async (username, password, done) => {
-			const user = await getUserByUsername({ username });
+		new LocalStrategy(
+			{
+				usernameField: "email",
+			},
+			async (email, password, done) => {
+				const user = await getUserByEmail({ email });
 
-			if (user) {
-				const isMatch = await bcrypt.compare(password, user.password);
-				if (isMatch) {
-					const id = user.id;
-					const accessToken = jwt.generateAccessToken({ username, id });
-					const refreshToken = jwt.generateRefreshToken({ username, id });
+				if (user) {
+					const isMatch = await bcrypt.compare(password, user.password);
+					if (isMatch) {
+						const id = user.id;
+						const accessToken = jwt.generateAccessToken({ email, id });
+						const refreshToken = jwt.generateRefreshToken({ email, id });
 
-					user.password = undefined;
+						user.password = undefined;
 
-					return done(null, {
-						user,
-						accessToken,
-						refreshToken,
-					});
-				} else return done(null, false, { message: "비밀번호가 일치하지 않습니다." });
+						return done(null, {
+							user,
+							accessToken,
+							refreshToken,
+						});
+					} else return done(null, false, { message: "비밀번호가 일치하지 않습니다." });
+				}
+
+				if (!user) return done(null, false, { message: "존재하지 않는 유저입니다." });
 			}
-
-			if (!user) return done(null, false, { message: "존재하지 않는 유저입니다." });
-		})
+		)
 	);
 
 	passport.use(
 		"jwt-access",
 		new JwtStrategy(jwtAccessOptions, async (payload, done) => {
-			const { username } = payload;
+			const { email } = payload;
 
-			const user = await getUserByUsername({ username });
+			const user = await getUserByEmail({ email });
 
 			if (user) {
 				return done(null, user);
@@ -54,9 +59,9 @@ module.exports = () => {
 	passport.use(
 		"jwt-refresh",
 		new JwtStrategy(jwtRefreshOptions, async (payload, done) => {
-			const { username } = payload;
+			const { email } = payload;
 
-			const user = await getUserByUsername({ username });
+			const user = await getUserByEmail({ email });
 
 			if (user) {
 				return done(null, user);
@@ -89,6 +94,6 @@ const jwtRefreshOptions = {
 	secretOrKey: JWT_REFRESH_SECRET,
 };
 
-const getUserByUsername = async ({ username }) => {
-	return await userService.getUserByUsername({ username });
+const getUserByEmail = async ({ email }) => {
+	return await userService.getUserByEmail({ email });
 };
