@@ -36,7 +36,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: "#/components/schemas/SchoolApi400FailResponse"
-    /api/users/:
+    /api/users:
         get:
             tags:
                 - users
@@ -99,7 +99,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: "#/components/schemas/UserApiFailResponse"
-    /api/auth/login/:
+    /api/auth/login:
         post:
             tags:
                 - auth
@@ -122,7 +122,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: "#/components/schemas/LoginApi400FailResponse"
-    /api/auth/logout/:
+    /api/auth/logout:
         post:
             tags:
                 - auth
