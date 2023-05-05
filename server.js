@@ -7,14 +7,14 @@ const passportConfig = require("./src/api/passport");
 const cookieParser = require("cookie-parser");
 const app = express();
 const cors = require("cors");
-// const swaggerUi = require('swagger-ui-express');
-// const path = require('path');
-// const yaml = require('yamljs');
-// const swaggerYaml = yaml.load(path.join(__dirname, './swagger/studentmanagement-1.0.0.yaml'))
+const swaggerUi = require('swagger-ui-express');
+const path = require('path');
+const yaml = require('yamljs');
+const swaggerYaml = yaml.load(path.join(__dirname, 'src/api/swagger/schoolmanagement-1.0.0.yaml'))
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerYaml));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerYaml));
 
 app.use(
 	cors({
