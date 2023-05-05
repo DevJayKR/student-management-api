@@ -2,7 +2,8 @@ const model = require("./users.model");
 
 module.exports = class UsersService {
 	async generateAdmin({ email, password }) {
-		await model.generateAdmin({ email, password });
+		const hashedPassword = await bcrpyt.hash(password, 10);
+		await model.generateAdmin({ email, hashedPassword });
 		const newAdmin = await model.getUserByEmail({ email });
 		newAdmin.password = undefined;
 
@@ -10,7 +11,8 @@ module.exports = class UsersService {
 	}
 
 	async createUser({ email, password }) {
-		await model.createUser({ email, password });
+		const hashedPassword = await bcrpyt.hash(password, 10);
+		await model.createUser({ email, hashedPassword });
 		return await this.getUserByEmail({ email });
 	}
 
