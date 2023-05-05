@@ -1,0 +1,337 @@
+---
+openapi: 3.0.0
+info:
+    title: Student Management API
+    description: This project was carried out in collaboration with 4 people.
+    version: 1.0.0
+servers:
+    - url: https://virtserver.swaggerhub.com/SHRUP5/Student_Management/1.0.0
+      description: SwaggerHub API Auto Mocking
+    - url: http://13.209.48.64/12033
+      description: school_management-api
+tags:
+    - name: users
+      description: Users API
+    - name: schools
+      description: School API
+    - name: auth
+      description: Auth API
+paths:
+    /api/school/all:
+        get:
+            tags:
+                - schools
+            summary: Get schools
+            description: 학교 검색
+            responses:
+                "200":
+                    description: search schools
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/SchoolApi200SuccessResponse"
+                "400":
+                    description: Bad Request
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/SchoolApi400FailResponse"
+    /api/users/:
+        get:
+            tags:
+                - users
+            summary: Get users
+            description: 유저 검색
+            parameters:
+                - name: email
+                  in: query
+                  description: Email for looking up Users
+                  required: false
+                  style: form
+                  explode: true
+                  schema:
+                      type: string
+                      example: admin
+                - name: id
+                  in: query
+                  description: ID for looking up Users
+                  required: false
+                  style: form
+                  explode: true
+                  schema:
+                      type: integer
+                      format: int32
+                      example: 1
+            responses:
+                "200":
+                    description: search results matching criteria
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/UserApi200SuccessResponse"
+                "400":
+                    description: bad input parameter
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/UserApiFailResponse"
+        post:
+            tags:
+                - users
+            summary: Post user
+            description: 유저 회원가입(등록)
+            requestBody:
+                description: Created user object
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/api_users_body"
+            responses:
+                "201":
+                    description: users created
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/UserApi201SuccessResponse"
+                "400":
+                    description: "invalid input, object invalid"
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/UserApiFailResponse"
+    /api/auth/login/:
+        post:
+            tags:
+                - auth
+            requestBody:
+                description: email and password required for login
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/auth_login_body"
+            responses:
+                "200":
+                    description: login success
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/LoginApi200SuccessResponse"
+                "400":
+                    description: ID or Password was not correct
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/LoginApi400FailResponse"
+    /api/auth/logout/:
+        post:
+            tags:
+                - auth
+            responses:
+                "200":
+                    description: logout success
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/LogoutApi200SuccessResponse"
+                "400":
+                    description: Bad Requset
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/LogoutApi400FailResponse"
+    /api/users/private/generateAdmin:
+        post:
+            tags:
+                - users
+            description: 유저 회원가입(등록)
+            requestBody:
+                description: Created user object
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/private_generateAdmin_body"
+            responses:
+                "201":
+                    description: users created
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/UserApi201SuccessResponse"
+                "400":
+                    description: "invalid input, object invalid"
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/UserApiFailResponse"
+components:
+    schemas:
+        UserApiFailResponse:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                    example: false
+                statusCode:
+                    type: integer
+                    example: 400
+                message:
+                    type: string
+                    example: Bad Request
+        UserApi201SuccessResponse:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                    example: true
+                statusCode:
+                    type: integer
+                    example: 201
+                message:
+                    type: string
+                    example: 회원가입 성공
+                data:
+                    $ref: "#/components/schemas/UserApi201SuccessResponse_data"
+        UserApi200SuccessResponse:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                    example: true
+                statusCode:
+                    type: integer
+                    example: 200
+                message:
+                    type: string
+                    example: 유저 찾기 성공
+                data:
+                    $ref: "#/components/schemas/UserApi201SuccessResponse_data"
+        SchoolApi200SuccessResponse:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                    example: true
+                statusCode:
+                    type: integer
+                    example: 200
+                message:
+                    type: string
+                    example: 학교 검색 성공
+                data:
+                    $ref: "#/components/schemas/SchoolApi200SuccessResponse_data"
+        SchoolApi400FailResponse:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                    example: false
+                statusCode:
+                    type: integer
+                    example: 400
+                message:
+                    type: string
+                    example: 학교 검색 실패
+        LoginApi200SuccessResponse:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                    example: true
+                statusCode:
+                    type: integer
+                    example: 200
+                message:
+                    type: string
+                    example: 로그인 성공
+                token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InRlc3QxMjM0NUB0ZXN0LmNvbSIsIm5hbWUiOiLqsJzrmKXsnbQiLCJpYXQiOjE2NzM5MzkyODIsImV4cCI6MTY3Mzk0MTA4MiwiaXNzIjoicGpoIn0.mhnym0QHD5YKE7pfhSCIHBPTeX8ivuTm1U5fMTR7R2g
+        LoginApi400FailResponse:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                    example: false
+                statusCode:
+                    type: integer
+                    example: 400
+                message:
+                    type: string
+                    example: 아이디나 비밀번호가 틀립니다.
+        LogoutApi200SuccessResponse:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                    example: true
+                statusCode:
+                    type: integer
+                    example: 200
+                message:
+                    type: string
+                    example: 로그아웃되었습니다.
+        LogoutApi400FailResponse:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                    example: false
+                statusCode:
+                    type: integer
+                    example: 400
+                message:
+                    type: string
+                    example: 로그아웃 실패
+        api_users_body:
+            properties:
+                email:
+                    type: string
+                    example: admin
+                password:
+                    type: string
+                    example: test1234
+        auth_login_body:
+            properties:
+                email:
+                    type: string
+                    example: admin
+                password:
+                    type: string
+                    example: test1234
+        private_generateAdmin_body:
+            properties:
+                email:
+                    type: string
+                    example: admin
+                password:
+                    type: string
+                    example: test1234
+        UserApi201SuccessResponse_data:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    example: 1
+                email:
+                    type: string
+                    example: admin
+                role_id:
+                    type: integer
+                    example: 5
+                school_id:
+                    type: integer
+                    example: 1
+        SchoolApi200SuccessResponse_data:
+            type: object
+            properties:
+                school_id:
+                    type: integer
+                    format: int32
+                    example: 1
+                school_name:
+                    type: string
+                    example: 가천고등학교
+                school_email:
+                    type: string
+                    format: email
+                    example: gacheon.ac.kr
