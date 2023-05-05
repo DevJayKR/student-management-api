@@ -1,4 +1,4 @@
-const pool = require("../loaders/db");
+const pool = require("../common/db");
 const bcrpyt = require("bcrypt");
 const response = require("../common/response");
 
@@ -11,19 +11,19 @@ module.exports = {
 	},
 
 	generateAdmin: async ({ email, password }) => {
-		const hashedPassword = await bcrpyt.hash(password, 10);
-		const params = [email, hashedPassword, 5];
+		const params = [email, password, 5];
 		const sql = `INSERT INTO users(email, password, role_id) VALUES(?,?,?)`;
-
-		await pool.execute(sql, params);
+		const result = await pool.execute(sql, params);
+		
+		return result[0];
 	},
 
 	createUser: async ({ email, password }) => {
-		const hashedPassword = await bcrpyt.hash(password, 10);
-		const params = [email, hashedPassword];
+		const params = [email, password];
 		const sql = `INSERT INTO users(email, password) VALUES(?,?)`;
 
-		await pool.execute(sql, params);
+		const result = await pool.execute(sql, params);
+		return result[0];
 	},
 
 	getUserByEmail: async ({ email }) => {
