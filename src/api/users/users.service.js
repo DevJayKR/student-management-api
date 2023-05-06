@@ -1,4 +1,5 @@
 const model = require("./users.model");
+const bcrpyt = require("bcrypt");
 
 module.exports = class UsersService {
 	async generateAdmin({ email, password }) {
