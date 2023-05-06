@@ -1,7 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const passport = require("passport");
-const LocalStrategy = require("passport-local");
 const { JWT_ACCESS_EXPIRATION_TIME, JWT_REFRESH_EXPIRATION_TIME } = process.env;
 const { accessTokenAuth } = require("./middlewares/access-token-auth");
 const { localAuth } = require("./middlewares/local-auth");
@@ -15,8 +13,8 @@ router.get("/test", accessTokenAuth, (req, res) => {
 router.post("/login", validator(loginSchema), localAuth, (req, res) => {
 	const { user } = res;
 
-	res.cookie("access", user.accessToken, { httpOnly: true, maxAge: JWT_ACCESS_EXPIRATION_TIME });
-	res.cookie("refresh", user.refreshToken, { httpOnly: true, maxAge: JWT_REFRESH_EXPIRATION_TIME });
+	res.cookie("access", user.accessToken, { httpOnly: true, maxAge: JWT_ACCESS_EXPIRATION_TIME, sameSite: "none" });
+	res.cookie("refresh", user.refreshToken, { httpOnly: true, maxAge: JWT_REFRESH_EXPIRATION_TIME, sameSite: "none" });
 	res.send(user);
 });
 
