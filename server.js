@@ -28,6 +28,7 @@ app.use(logger);
 
 app.use(passport.initialize());
 passportConfig();
+app.use('/upload', express.static('upload'));
 
 app.use("/api", api);
 

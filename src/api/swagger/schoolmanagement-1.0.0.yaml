@@ -36,7 +36,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: "#/components/schemas/SchoolApi400FailResponse"
-    /api/users:
+    /api/users/:
         get:
             tags:
                 - users
@@ -99,7 +99,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: "#/components/schemas/UserApiFailResponse"
-    /api/auth/login:
+    /api/auth/login/:
         post:
             tags:
                 - auth
@@ -122,7 +122,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: "#/components/schemas/LoginApi400FailResponse"
-    /api/auth/logout:
+    /api/auth/logout/:
         post:
             tags:
                 - auth
@@ -163,6 +163,54 @@ paths:
                         application/json:
                             schema:
                                 $ref: "#/components/schemas/UserApiFailResponse"
+    /api/users/teacher:
+        post:
+            tags:
+                - users
+            description: 선생님 회원가입(등록)
+            requestBody:
+                description: Created teacher object
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/users_teacher_body"
+            responses:
+                "201":
+                    description: users created
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/TeacherApi201SuccessResponse"
+                "400":
+                    description: "invalid input, object invalid"
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/TeacherApiFailResponse"
+    /api/users/student:
+        post:
+            tags:
+                - users
+            description: 학생 회원가입(등록)
+            requestBody:
+                description: Created student object
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/users_student_body"
+            responses:
+                "201":
+                    description: users created
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/StudentApi201SuccessResponse"
+                "400":
+                    description: "invalid input, object invalid"
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/StudentApiFailResponse"
 components:
     schemas:
         UserApiFailResponse:
@@ -282,6 +330,58 @@ components:
                 message:
                     type: string
                     example: 로그아웃 실패
+        TeacherApi201SuccessResponse:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                    example: true
+                statusCode:
+                    type: integer
+                    example: 201
+                message:
+                    type: string
+                    example: 회원가입 성공
+                data:
+                    $ref: "#/components/schemas/TeacherApi201SuccessResponse_data"
+        TeacherApiFailResponse:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                    example: false
+                statusCode:
+                    type: integer
+                    example: 400
+                message:
+                    type: string
+                    example: 선생님 회원가입 실패
+        StudentApi201SuccessResponse:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                    example: true
+                statusCode:
+                    type: integer
+                    example: 201
+                message:
+                    type: string
+                    example: 회원가입 성공
+                data:
+                    $ref: "#/components/schemas/StudentApi201SuccessResponse_data"
+        StudentApiFailResponse:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                    example: false
+                statusCode:
+                    type: integer
+                    example: 400
+                message:
+                    type: string
+                    example: 학생 회원가입 실패
         api_users_body:
             properties:
                 email:
@@ -306,6 +406,64 @@ components:
                 password:
                     type: string
                     example: test1234
+        users_teacher_body:
+            properties:
+                email:
+                    type: string
+                    example: teacher
+                password:
+                    type: string
+                    example: "1234"
+                grade:
+                    type: integer
+                    example: 1
+                subject:
+                    type: integer
+                    example: 1
+                gender:
+                    type: integer
+                    example: 1
+                phone_number:
+                    type: string
+                    example: "01012341234"
+                school_id:
+                    type: integer
+                    example: 1
+                profile_image_url:
+                    type: string
+                    example: upload/image-1683376876460.png
+                user_about:
+                    type: string
+                    example: "hi, i'm james."
+        users_student_body:
+            properties:
+                email:
+                    type: string
+                    example: student
+                password:
+                    type: string
+                    example: "1234"
+                grade:
+                    type: integer
+                    example: 1
+                subject:
+                    type: integer
+                    example: 1
+                gender:
+                    type: integer
+                    example: 1
+                phone_number:
+                    type: string
+                    example: "01012341234"
+                school_id:
+                    type: integer
+                    example: 1
+                profile_image_url:
+                    type: string
+                    example: upload/image-1683376876460.png
+                user_about:
+                    type: string
+                    example: "hi, i'm ob."
         UserApi201SuccessResponse_data:
             type: object
             properties:
@@ -335,3 +493,69 @@ components:
                     type: string
                     format: email
                     example: gacheon.ac.kr
+        TeacherApi201SuccessResponse_data:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    example: 1
+                email:
+                    type: string
+                    example: teacher
+                role_id:
+                    type: integer
+                    example: 3
+                class:
+                    type: integer
+                    example: 1
+                subject:
+                    type: integer
+                    example: 1
+                gender:
+                    type: integer
+                    example: 1
+                phone_number:
+                    type: string
+                    example: "01012341234"
+                school_id:
+                    type: integer
+                    example: 1
+                profile_image_url:
+                    type: string
+                    example: upload/image-1683376876460.png
+                user_about:
+                    type: string
+                    example: "hi, i'm james."
+        StudentApi201SuccessResponse_data:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    example: 1
+                email:
+                    type: string
+                    example: student
+                role_id:
+                    type: integer
+                    example: 2
+                class:
+                    type: integer
+                    example: 1
+                subject:
+                    type: integer
+                    example: 1
+                gender:
+                    type: integer
+                    example: 1
+                phone_number:
+                    type: string
+                    example: "01012341234"
+                school_id:
+                    type: integer
+                    example: 1
+                profile_image_url:
+                    type: string
+                    example: upload/image-1683376876460.png
+                user_about:
+                    type: string
+                    example: "hi, i'm ob."
