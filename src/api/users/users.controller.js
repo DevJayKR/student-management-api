@@ -1,6 +1,7 @@
 const UsersService = require("./users.service");
 const Service = new UsersService();
 const response = require("../common/response");
+const { NotFoundError } = require("../common/errors/customError");
 
 module.exports = {
 	getUsers: async () => {
@@ -8,31 +9,28 @@ module.exports = {
 	},
 
 	generateAdmin: async ({ email, password }) => {
-		try {
-			const newAdmin = await Service.generateAdmin({ email, password });
-			return response.success("어드민 생성 성공", {
-				newAdmin,
-			});
-		} catch (error) {
-			if (error.errno === 1062) return response.fail("이미 사용중인 이메일입니다.");
-		}
+		const newAdmin = await Service.generateAdmin({ email, password });
+		return response.success("어드민 생성 성공", {
+			newAdmin,
+		});
 	},
 
 	createUser: async ({ email, password }) => {
-		try {
-			const newUser = await Service.createUser({ email, password });
-			return response.success("회원가입 성공", newUser);
-		} catch (error) {
-			if (error.errno === 1062) return response.fail("이미 사용중인 이메일입니다.");
-		}
+		const newUser = await Service.createUser({ email, password });
+		return response.success("회원가입 성공", newUser);
 	},
 
 	getUserByEmail: async ({ email }) => {
-		return await Service.getUserByEmail({ email });
+		const user = await Service.getUserByEmail({ email });
+
+		if (user) return user;
+		else throw new NotFoundError("존재하지 않는 유저입니다.");
 	},
 
 	getUserById: async ({ id }) => {
-		return await Service.getUserById({ id });
+		const user = await Service.getUserById({ id });
+		if (user) return user;
+		else throw new NotFoundError("존재하지 않는 유저입니다.");
 	},
 
 	createTeacher : async({email,password,grade,subject,gender,phone_nubmer,school_id,profile_image_url,user_about}) =>{

@@ -7,10 +7,11 @@ exports.localAuth = (req, res, next) => {
 			successRedirect: "/",
 			failureRedirect: "/login",
 		},
-		function (err, user, info) {
+		function (err, result, info) {
 			if (info) return res.json(info);
-			if (user) {
-				res.user = user;
+			if (result) {
+				res.user = result.user;
+				res.tokens = result.tokens;
 				next();
 			}
 		}
