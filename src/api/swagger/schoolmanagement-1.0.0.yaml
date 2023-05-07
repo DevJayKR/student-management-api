@@ -414,6 +414,9 @@ components:
                 password:
                     type: string
                     example: "1234"
+                name:
+                    type: string
+                    example: "James"
                 grade:
                     type: integer
                     example: 1
@@ -443,6 +446,9 @@ components:
                 password:
                     type: string
                     example: "1234"
+                name:
+                    type: string
+                    example: "Dean"
                 grade:
                     type: integer
                     example: 1
@@ -505,6 +511,9 @@ components:
                 role_id:
                     type: integer
                     example: 3
+                name:
+                    type: string
+                    example: "James"
                 class:
                     type: integer
                     example: 1
@@ -538,6 +547,9 @@ components:
                 role_id:
                     type: integer
                     example: 2
+                name:
+                    type: string
+                    example: "Dean"
                 class:
                     type: integer
                     example: 1
