@@ -2,9 +2,9 @@ const express = require("express");
 const router = express.Router();
 const controller = require("./users.controller");
 const validator = require("../common/middlewares/validator");
-const { createSchema, getUserSchema } = require("./users.schemas");
+const { createSchema } = require("./users.schemas");
 
-router.get("/", validator(getUserSchema), async (req, res, next) => {
+router.get("/", async (req, res, next) => {
 	try {
 		if (req.query.email) {
 			const { email } = req.query;

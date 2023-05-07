@@ -23,15 +23,12 @@ module.exports = () => {
 					const isMatch = await bcrypt.compare(password, user.password);
 					if (isMatch) {
 						const id = user.id;
-						const accessToken = jwt.generateAccessToken({ email, id });
-						const refreshToken = jwt.generateRefreshToken({ email, id });
-
-						user.password = undefined;
+						const accessToken = jwt.generateAccessToken({ email, id, role: user.role_id });
+						const refreshToken = jwt.generateRefreshToken({ email, id, role: user.role_id });
 
 						return done(null, {
 							user,
-							accessToken,
-							refreshToken,
+							tokens: { accessToken, refreshToken },
 						});
 					} else return done(null, false, { message: "비밀번호가 일치하지 않습니다." });
 				}

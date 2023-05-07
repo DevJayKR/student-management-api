@@ -5,16 +5,17 @@ const { accessTokenAuth } = require("./middlewares/access-token-auth");
 const { localAuth } = require("./middlewares/local-auth");
 const validator = require("../common/middlewares/validator");
 const { loginSchema } = require("./auth.schemas");
+const { ROLE, roleChecker } = require("./middlewares/role-checker");
 
-router.get("/test", accessTokenAuth, (req, res) => {
+router.get("/test", accessTokenAuth, roleChecker(ROLE.SUPER_ADMIN), (req, res) => {
 	res.send(res.user);
 });
 
 router.post("/login", validator(loginSchema), localAuth, (req, res) => {
-	const { user } = res;
+	const { user, tokens } = res;
 
-	res.cookie("access", user.accessToken, { httpOnly: true, maxAge: JWT_ACCESS_EXPIRATION_TIME, sameSite: "none" });
-	res.cookie("refresh", user.refreshToken, { httpOnly: true, maxAge: JWT_REFRESH_EXPIRATION_TIME, sameSite: "none" });
+	res.cookie("access", tokens.accessToken, { httpOnly: true, maxAge: JWT_ACCESS_EXPIRATION_TIME });
+	res.cookie("refresh", tokens.refreshToken, { httpOnly: true, maxAge: JWT_REFRESH_EXPIRATION_TIME });
 	res.send(user);
 });
 

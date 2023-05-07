@@ -27,17 +27,11 @@ module.exports = class UsersService {
 	}
 
 	async getUserByEmail({ email }) {
-		const user = await model.getUserByEmail({ email });
-
-		if (user) return user;
-		else throw new NotFoundError("존재하지 않는 유저입니다.");
+		return await model.getUserByEmail({ email });
 	}
 
 	async getUserById({ id }) {
-		const user = await model.getUserById({ id });
-
-		if (user) return user;
-		else throw new NotFoundError("존재하지 않는 유저입니다.");
+		return await model.getUserById({ id });
 	}
 
 	async getUsers() {

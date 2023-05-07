@@ -1,4 +1,4 @@
-const { BAD_REQUEST, NOT_FOUND } = require("./errorStatusCode");
+const { BAD_REQUEST, NOT_FOUND, FORBIDDEN } = require("./errorStatusCode");
 
 class ApplicationError extends Error {
 	constructor(message, statusCode, data) {
@@ -23,4 +23,11 @@ class NotFoundError extends ApplicationError {
 	}
 }
 
-module.exports = { BadRequestError, NotFoundError };
+class ForbiddenError extends ApplicationError {
+	constructor(message, data) {
+		super(message, FORBIDDEN, data);
+		this.name = this.constructor.name;
+	}
+}
+
+module.exports = { BadRequestError, NotFoundError, ForbiddenError };

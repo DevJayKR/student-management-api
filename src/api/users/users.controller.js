@@ -1,6 +1,7 @@
 const UsersService = require("./users.service");
 const Service = new UsersService();
 const response = require("../common/response");
+const { NotFoundError } = require("../common/errors/customError");
 
 module.exports = {
 	getUsers: async () => {
@@ -20,10 +21,15 @@ module.exports = {
 	},
 
 	getUserByEmail: async ({ email }) => {
-		return await Service.getUserByEmail({ email });
+		const user = await Service.getUserByEmail({ email });
+
+		if (user) return user;
+		else throw new NotFoundError("존재하지 않는 유저입니다.");
 	},
 
 	getUserById: async ({ id }) => {
-		return await Service.getUserById({ id });
+		const user = await Service.getUserById({ id });
+		if (user) return user;
+		else throw new NotFoundError("존재하지 않는 유저입니다.");
 	},
 };

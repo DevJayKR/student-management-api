@@ -7,12 +7,11 @@ exports.accessTokenAuth = (req, res, next) => {
 		{
 			session: false,
 		},
-		(err, user, info) => {
-			if (!user) return res.json(response.fail("허가되지 않은 접근입니다.", info));
+		(err, result, info) => {
+			if (!result) return res.json(response.fail("허가되지 않은 접근입니다.", info));
 
-			if (user) {
-				user.password = undefined;
-				res.user = user;
+			if (result) {
+				res.user = result;
 				next();
 			}
 		}
