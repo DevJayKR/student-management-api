@@ -48,16 +48,16 @@ module.exports = {
 
 	},
 	
-	createTeacher : async({email,hashedPassword,grade,subject,gender,phone_nubmer,school_id})=>{
-		const sql = 'INSERT INTO users (email,password,role_id,class,subject,gender,phone_number,school_id)VALUES(?,?,?,?,?,?,?,?)';
-		const params = [email,hashedPassword,3,grade,subject,gender,phone_nubmer,school_id];
+	createTeacher : async({email,hashedPassword,name,grade,subject,gender,phone_nubmer,school_id})=>{
+		const sql = 'INSERT INTO users (email,password,role_id,name,class,subject,gender,phone_number,school_id)VALUES(?,?,?,?,?,?,?,?)';
+		const params = [email,hashedPassword,3,name,grade,subject,gender,phone_nubmer,school_id];
 		const result = await pool.execute(sql,params);
 		return result[0];
 	},
 	
-	createStudent : async({email,hashedPassword,grade,gender,phone_nubmer,school_id})=>{
-		const sql = 'INSERT INTO users (email,password,role_id,class,gender,phone_number,school_id)VALUES(?,?,?,?,?,?,?)';
-		const params = [email,hashedPassword,2,grade,gender,phone_nubmer,school_id];
+	createStudent : async({email,hashedPassword,name,grade,gender,phone_nubmer,school_id})=>{
+		const sql = 'INSERT INTO users (email,password,role_id,name,class,gender,phone_number,school_id)VALUES(?,?,?,?,?,?,?)';
+		const params = [email,hashedPassword,2,name,grade,gender,phone_nubmer,school_id];
 		const result = await pool.execute(sql,params);
 		return result[0];
 	},
