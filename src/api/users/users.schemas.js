@@ -10,3 +10,8 @@ exports.createSchema = Joi.object({
 		"any.required": "패스워드는 필수 입력값입니다.",
 	}),
 });
+
+exports.getUserSchema = Joi.object({
+	email: Joi.string().optional(),
+	id: Joi.string().optional(),
+});

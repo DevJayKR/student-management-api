@@ -8,8 +8,8 @@ module.exports = {
 		return result[0];
 	},
 
-	generateAdmin: async ({ email, password }) => {
-		const params = [email, password, 5];
+	generateAdmin: async ({ email, hashedPassword }) => {
+		const params = [email, hashedPassword, 5];
 		const sql = `INSERT INTO users(email, password, role_id) VALUES(?,?,?)`;
 		const result = await pool.execute(sql, params);
 
