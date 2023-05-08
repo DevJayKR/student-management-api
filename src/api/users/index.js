@@ -45,15 +45,52 @@ router.post("/", validator(createSchema), async (req, res, next) => {
 
 router.post("/teacher",upload.single('image'),async(req,res)=>{
 	const profile_image_url = req.file.path;
-	const {email,password,name,grade,subject,gender,phone_nubmer,school_id,user_about} = req.body;
-	const teacher = await controller.createTeacher({email,password,name,grade,subject,gender,phone_nubmer,school_id,profile_image_url,user_about})
+	const {email,password,email_address,name,grade,subject,gender,phone_nubmer,school_id,user_about} = req.body;
+	const teacher = await controller.createTeacher({email,password,email_address,name,grade,subject,gender,phone_nubmer,school_id,profile_image_url,user_about})
 	res.send(teacher);
-})
+});
 
 router.post("/student",upload.single('image'),async(req,res)=>{
 	const profile_image_url = req.file.path;
-	const {email,password,name,grade,gender,phone_nubmer,school_id,user_about} = req.body;
-	const student = await controller.createStudent({email,password,name,grade,gender,phone_nubmer,school_id,profile_image_url,user_about});
+	const {email,password,email_address,name,grade,gender,phone_nubmer,school_id,user_about} = req.body;
+	const student = await controller.createStudent({email,password,email_address,name,grade,gender,phone_nubmer,school_id,profile_image_url,user_about});
+	res.send(student);
+});
+
+router.get('/teacher',async(req,res)=>{
+	const {id} = req.query;
+	const teacher = await controller.getUserById({id});
+	res.send(teacher);
+});
+
+router.get('/student',async(req,res)=>{
+	const {id} = req.query;
+	const student = await controller.getUserById({id});
+	res.send(student);
+});
+
+router.get('/teacher/all',async(req,res)=>{
+	const teacher = await controller.getTeachers();
+	res.send(teacher);
+});
+
+router.get('/student/all',async(req,res)=>{
+	const student = await controller.getStudents();
+	res.send(student);
+});
+
+router.put('/teacher',async(req,res)=>{
+	const {id} = req.query;
+	const {subject,grade,gender,email,user_about} = req.body;
+	const teacher = await controller.updateTeacher({subject,grade,gender,email,user_about,id});
+	res.send(teacher);
+});
+
+router.put('/student',async(req,res)=>{
+	const {id} = req.query;
+	const {grade,gender,email,user_about} = req.body;
+	console.log(req.body);
+	const student = await controller.updateStudent({grade,gender,email,user_about,id});
 	res.send(student);
 })
 
