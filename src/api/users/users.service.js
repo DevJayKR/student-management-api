@@ -38,10 +38,10 @@ module.exports = class UsersService {
 		return await model.getUsers();
 	}
 
-	async createTeacher({email,password,name,grade,subject,gender,phone_nubmer,school_id}) {
+	async createTeacher({email,password,email_address,name,grade,subject,gender,phone_nubmer,school_id}) {
 		try {
 			const hashedPassword = await bcrpyt.hash(password,10);
-			await model.createTeacher({email,hashedPassword,name,grade,subject,gender,phone_nubmer,school_id});
+			await model.createTeacher({email,hashedPassword,email_address,name,grade,subject,gender,phone_nubmer,school_id});
 			const teacher = await this.getUserByEmail({email});
 			return teacher;	
 		} catch (error) {
@@ -50,10 +50,10 @@ module.exports = class UsersService {
 		}
 	}
 
-	async createStudent({email,password,name,grade,gender,phone_nubmer,school_id}) {
+	async createStudent({email,password,email_address,name,grade,gender,phone_nubmer,school_id}) {
 		try {
 			const hashedPassword = await bcrpyt.hash(password,10);
-			await model.createStudent({email,hashedPassword,name,grade,gender,phone_nubmer,school_id});
+			await model.createStudent({email,hashedPassword,email_address,name,grade,gender,phone_nubmer,school_id});
 			const student = await this.getUserByEmail({email});
 			return student;	
 		} catch (error) {
@@ -65,6 +65,23 @@ module.exports = class UsersService {
 	async createProfile({user_id,profile_image_url,user_about}){
 		await model.createProfile({user_id,profile_image_url,user_about});
 		return await model.getProfiles();
-		
+	}
+
+	async getTeachers(){
+		return await model.getTeachers();
+	}
+
+	async getStudents(){
+		return await model.getStudents();
+	}
+
+	async updateTeacher({subject,grade,gender,email,user_about,id}){
+		await model.updateTeachers({subject,grade,gender,email,user_about,id});
+		return await model.getUserById({id});
+	}
+
+	async updateStudent({grade,gender,email,user_about,id}){
+		await model.updateTeachers({grade,gender,email,user_about,id});
+		return await model.getUserById({id});
 	}
 };

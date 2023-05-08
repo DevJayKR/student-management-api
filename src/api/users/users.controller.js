@@ -33,9 +33,9 @@ module.exports = {
 		else throw new NotFoundError("존재하지 않는 유저입니다.");
 	},
 
-	createTeacher : async({email,password,name,grade,subject,gender,phone_nubmer,school_id,profile_image_url,user_about}) =>{
+	createTeacher : async({email,password,email_address,name,grade,subject,gender,phone_nubmer,school_id,profile_image_url,user_about}) =>{
 		try {
-			const teacher = await Service.createTeacher({email,password,name,grade,subject,gender,phone_nubmer,school_id});
+			const teacher = await Service.createTeacher({email,password,email_address,name,grade,subject,gender,phone_nubmer,school_id});
 			const user_id = teacher.id;
 			const profile = await Service.createProfile({user_id,profile_image_url,user_about});
 			return response.success("선생님 등록 성공",teacher);
@@ -45,9 +45,9 @@ module.exports = {
 		}
 	},
 
-	createStudent : async({email,password,name,grade,gender,phone_nubmer,school_id,profile_image_url,user_about}) =>{
+	createStudent : async({email,password,email_address,name,grade,gender,phone_nubmer,school_id,profile_image_url,user_about}) =>{
 		try {
-			const student = await Service.createStudent({email,password,name,grade,gender,phone_nubmer,school_id,profile_image_url,user_about});
+			const student = await Service.createStudent({email,password,email_address,name,grade,gender,phone_nubmer,school_id,profile_image_url,user_about});
 			const user_id = student.id;
 			const profile = await Service.createProfile({user_id,profile_image_url,user_about});
 			return response.success("학생 등록 성공",student);
@@ -61,5 +61,25 @@ module.exports = {
 	createProfile : async({user_id,profile_image_url,user_about}) =>{
 		const profile = await Service.createProfile({user_id,profile_image_url,user_about});
 		return response.success("프로필 등록 성공",profile);
+	},
+
+	getTeachers : async() =>{
+		const teachers = await Service.getTeachers();
+		return response.success("선생님 찾기 성공",teachers);
+	},
+
+	getStudents : async() =>{
+		const students = await Service.getStudents();
+		return response.success("학생 찾기 성공",students);
+	},
+
+	updateTeacher : async({subject,grade,gender,email,user_about,id}) =>{
+		const teachers = await Service.updateTeacher({subject,grade,gender,email,user_about,id});
+		return response.success("선생님 업데이트 성공",teachers);
+	},
+
+	updateStudent : async({grade,gender,email,user_about,id})=>{
+		const students = await Service.updateStudent({grade,gender,email,user_about,id});
+		return response.success("학생 업데이트 성공",students);
 	}
 };
