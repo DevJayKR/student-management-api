@@ -75,13 +75,13 @@ module.exports = {
 	},
 	//figma 선생님 리스트
 	getTeachers : async() =>{
-		const sql= 'SELECT id,name,subject,class,email_address,gender,phone_nubmer,email_address FROM users where role_id = 3';
+		const sql= 'SELECT * FROM users where role_id = 3';
 		const result = await pool.execute(sql);
 		return result[0];
 	},
 	//figma 학생 리스트
 	getStudents : async() =>{
-		const sql = 'SELECT id,name,email,email_address,class,gender,phone_nubmer,email_address FROM users where role_id = 2';
+		const sql = 'SELECT * FROM users where role_id = 2';
 		const result = await pool.execute(sql);
 		return result[0];
 	},
