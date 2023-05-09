@@ -3,11 +3,17 @@ exports.success = (message, _data, _statusCode) => {
 		success: true,
 		statusCode: _statusCode || 200,
 		message,
-		data: {
-			..._data,
-		},
+		_data
 	};
 };
+
+exports.successCreate = (message,_statusCode) =>{
+	return {
+		success: true,
+		statusCode : _statusCode,
+		message,
+	}
+}
 
 exports.fail = (message, _data, _errorCode) => {
 	return {
