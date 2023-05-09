@@ -1,4 +1,4 @@
-const { BAD_REQUEST, NOT_FOUND, FORBIDDEN } = require("./errorStatusCode");
+const { BAD_REQUEST, NOT_FOUND, FORBIDDEN } = require("./httpStatusCode");
 
 class ApplicationError extends Error {
 	constructor(message, statusCode, data) {
