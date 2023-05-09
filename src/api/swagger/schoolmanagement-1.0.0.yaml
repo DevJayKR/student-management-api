@@ -5,8 +5,6 @@ info:
     description: This project was carried out in collaboration with 4 people.
     version: 1.0.0
 servers:
-    - url: https://virtserver.swaggerhub.com/SHRUP5/Student_Management/1.0.0
-      description: SwaggerHub API Auto Mocking
     - url: http://13.209.48.64/12033
       description: school_management-api
 tags:
@@ -16,13 +14,17 @@ tags:
       description: School API
     - name: auth
       description: Auth API
+    - name: teacher
+      description: Teacher API
+    - name: student
+      description: Student API
 paths:
     /api/school/all:
         get:
             tags:
                 - schools
-            summary: Get schools
-            description: 학교 검색
+            summary: 모든 학교 검색
+            description: 모든 학교 검색
             responses:
                 "200":
                     description: search schools
@@ -36,73 +38,75 @@ paths:
                         application/json:
                             schema:
                                 $ref: "#/components/schemas/SchoolApi400FailResponse"
-    /api/users/:
-        get:
-            tags:
-                - users
-            summary: Get users
-            description: 유저 검색
-            parameters:
-                - name: email
-                  in: query
-                  description: Email for looking up Users
-                  required: false
-                  style: form
-                  explode: true
-                  schema:
-                      type: string
-                      example: admin
-                - name: id
-                  in: query
-                  description: ID for looking up Users
-                  required: false
-                  style: form
-                  explode: true
-                  schema:
-                      type: integer
-                      format: int32
-                      example: 1
-            responses:
-                "200":
-                    description: search results matching criteria
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/UserApi200SuccessResponse"
-                "400":
-                    description: bad input parameter
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/UserApiFailResponse"
-        post:
-            tags:
-                - users
-            summary: Post user
-            description: 유저 회원가입(등록)
-            requestBody:
-                description: Created user object
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/api_users_body"
-            responses:
-                "201":
-                    description: users created
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/UserApi201SuccessResponse"
-                "400":
-                    description: "invalid input, object invalid"
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/UserApiFailResponse"
+    # /api/users/:
+    # get:
+    #     tags:
+    #         - users
+    #     summary: 모든 유저 검색
+    #     description: 모든 유저 검색
+    #     parameters:
+    #         - name: email
+    #           in: query
+    #           description: Email for looking up Users
+    #           required: false
+    #           style: form
+    #           explode: true
+    #           schema:
+    #               type: string
+    #               example: admin
+    #         - name: id
+    #           in: query
+    #           description: ID for looking up Users
+    #           required: false
+    #           style: form
+    #           explode: true
+    #           schema:
+    #               type: integer
+    #               format: int32
+    #               example: 1
+    #     responses:
+    #         "200":
+    #             description: search results matching criteria
+    #             content:
+    #                 application/json:
+    #                     schema:
+    #                         $ref: "#/components/schemas/UserApi200SuccessResponse"
+    #         "400":
+    #             description: bad input parameter
+    #             content:
+    #                 application/json:
+    #                     schema:
+    #                         $ref: "#/components/schemas/UserApi400FailResponse"
+    # post:
+    #     tags:
+    #         - users
+    #     summary: 회원가입(유저)
+    #     description: 유저 회원가입(등록)
+    #     requestBody:
+    #         description: Created user object
+    #         content:
+    #             application/json:
+    #                 schema:
+    #                     $ref: "#/components/schemas/api_users_body"
+    # responses:
+    #     "201":
+    #         description: users created
+    #         content:
+    #             application/json:
+    #                 schema:
+    #                     $ref: "#/components/schemas/UserApi201SuccessResponse"
+    #     "400":
+    #         description: "invalid input, object invalid"
+    #         content:
+    #             application/json:
+    #                 schema:
+    #                     $ref: "#/components/schemas/UserApi400FailResponse"
     /api/auth/login/:
         post:
             tags:
                 - auth
+            summary: 로그인
+            description: 로그인
             requestBody:
                 description: email and password required for login
                 content:
@@ -126,6 +130,8 @@ paths:
         post:
             tags:
                 - auth
+            summary: 로그아웃
+            description: 로그아웃
             responses:
                 "200":
                     description: logout success
@@ -143,9 +149,10 @@ paths:
         post:
             tags:
                 - users
-            description: 유저 회원가입(등록)
+            summary: 관리자 회원가입(admin)
+            description: 관리자 회원가입(등록)
             requestBody:
-                description: Created user object
+                description: Input Admin Data
                 content:
                     application/json:
                         schema:
@@ -162,23 +169,24 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: "#/components/schemas/UserApiFailResponse"
+                                $ref: "#/components/schemas/UserApi400FailResponse"
     /api/users/teacher:
         post:
             tags:
-                - users
+                - teacher
+            summary: 선생님 회원가입(teacher)
             description: 선생님 회원가입(등록)
             requestBody:
-                description: Created teacher object
+                description: Input Teacher Data
                 content:
-                    application/json:
+                    multipart/form-data:
                         schema:
                             $ref: "#/components/schemas/users_teacher_body"
             responses:
                 "201":
                     description: users created
                     content:
-                        application/json:
+                        multipart/form-data:
                             schema:
                                 $ref: "#/components/schemas/TeacherApi201SuccessResponse"
                 "400":
@@ -186,59 +194,181 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: "#/components/schemas/TeacherApiFailResponse"
+                                $ref: "#/components/schemas/TeacherApi400FailResponse"
+        put:
+            tags:
+                - teacher
+            summary: 선생님 수정
+            description: 선생님 수정
+            requestBody:
+                description: If you want to change data Input that!
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/api_update_teacher_body"
+            responses:
+                "201":
+                    description: Success to update
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/TeacherApi201SuccessResponse"
+                "400":
+                    description: Bad Request
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/TeacherApi400FailResponse"
+
+        delete:
+            tags:
+                - teacher
+            summary: 선생님 삭제
+            description: 선생님 삭제
+            parameters:
+                - name: id
+                  in: query
+                  description: ID for looking up Users
+                  required: true
+                  style: form
+                  explode: true
+                  schema:
+                      type: integer
+                      format: int32
+                      example: 99
+            responses:
+                "201":
+                    description: Success to delete
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/TeacherDeleteApi201SuccessResponse"
+                "400":
+                    description: Bad Request
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/TeacherApi400FailResponse"
     /api/users/student:
         post:
             tags:
-                - users
+                - student
+            summary: 학생 회원가입(student)
             description: 학생 회원가입(등록)
             requestBody:
-                description: Created student object
+                description: Input Student Data
                 content:
-                    application/json:
+                    multipart/form-data:
                         schema:
                             $ref: "#/components/schemas/users_student_body"
             responses:
                 "201":
                     description: users created
                     content:
+                        multipart/form-data:
+                            schema:
+                                $ref: "#/components/schemas/StudentApi201SuccessResponse"
+                "400":
+                    description: Bad Request
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/StudentApi400FailResponse"
+        put:
+            tags:
+                - student
+            summary: 학생 수정
+            description: 학생 수정
+            requestBody:
+                description: If you want to change data Input that!
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/api_update_student_body"
+            responses:
+                "201":
+                    description: Success to update
+                    content:
                         application/json:
                             schema:
                                 $ref: "#/components/schemas/StudentApi201SuccessResponse"
                 "400":
-                    description: "invalid input, object invalid"
+                    description: Bad Request
                     content:
                         application/json:
                             schema:
-                                $ref: "#/components/schemas/StudentApiFailResponse"
+                                $ref: "#/components/schemas/TeacherApi400FailResponse"
+        delete:
+            tags:
+                - student
+            summary: 학생 삭제
+            description: 학생 삭제
+            parameters:
+                - name: id
+                  in: query
+                  description: ID for looking up Users
+                  required: true
+                  style: form
+                  explode: true
+                  schema:
+                      type: integer
+                      format: int32
+                      example: 99
+            responses:
+                "201":
+                    description: Success to delete
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/StudentDeleteApi201SuccessResponse"
+                "400":
+                    description: Bad Request
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/StudentApi400FailResponse"
+    /api/users/student/all:
+        get:
+            tags:
+                - student
+            summary: 학생 불러오기
+            description: 학생 찾기
+            responses:
+                "200":
+                    description: Find student
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/StudentApi200SuccessResponse"
+                "400":
+                    description: Bad Request
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/UserApi400FailResponse"
+    /api/users/teacher/all:
+        get:
+            tags:
+                - teacher
+            summary: 선생님 불러오기
+            description: 선생님 찾기
+            responses:
+                "200":
+                    description: Find teacher
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/TeacherApi200SuccessResponse"
+                "400":
+                    description: Bad Request
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/UserApi400FailResponse"
+
 components:
     schemas:
-        UserApiFailResponse:
-            type: object
-            properties:
-                success:
-                    type: boolean
-                    example: false
-                statusCode:
-                    type: integer
-                    example: 400
-                message:
-                    type: string
-                    example: Bad Request
-        UserApi201SuccessResponse:
-            type: object
-            properties:
-                success:
-                    type: boolean
-                    example: true
-                statusCode:
-                    type: integer
-                    example: 201
-                message:
-                    type: string
-                    example: 회원가입 성공
-                data:
-                    $ref: "#/components/schemas/UserApi201SuccessResponse_data"
+        # 유저 찾기 성공시 200 반환
         UserApi200SuccessResponse:
             type: object
             properties:
@@ -252,7 +382,36 @@ components:
                     type: string
                     example: 유저 찾기 성공
                 data:
-                    $ref: "#/components/schemas/UserApi201SuccessResponse_data"
+                    $ref: "#/components/schemas/UserApiSuccessResponse_data"
+        # 유저 생성 성공시 200 반환 및 Data 반환
+        UserApi201SuccessResponse:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                    example: true
+                statusCode:
+                    type: integer
+                    example: 201
+                message:
+                    type: string
+                    example: 회원가입 성공
+                data:
+                    $ref: "#/components/schemas/UserApiSuccessResponse_data"
+        #유저 400에러
+        UserApi400FailResponse:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                    example: false
+                statusCode:
+                    type: integer
+                    example: 400
+                message:
+                    type: string
+                    example: Bad Request
+        #학교 검색 성공시 200 반환
         SchoolApi200SuccessResponse:
             type: object
             properties:
@@ -266,7 +425,8 @@ components:
                     type: string
                     example: 학교 검색 성공
                 data:
-                    $ref: "#/components/schemas/SchoolApi200SuccessResponse_data"
+                    $ref: "#/components/schemas/SchoolApiSuccessResponse_data"
+        # 학교 검색 실패시 400에러 반환
         SchoolApi400FailResponse:
             type: object
             properties:
@@ -279,6 +439,7 @@ components:
                 message:
                     type: string
                     example: 학교 검색 실패
+        #로그인 성공시 토큰 반환 및 200 반환
         LoginApi200SuccessResponse:
             type: object
             properties:
@@ -294,6 +455,7 @@ components:
                 token:
                     type: string
                     example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InRlc3QxMjM0NUB0ZXN0LmNvbSIsIm5hbWUiOiLqsJzrmKXsnbQiLCJpYXQiOjE2NzM5MzkyODIsImV4cCI6MTY3Mzk0MTA4MiwiaXNzIjoicGpoIn0.mhnym0QHD5YKE7pfhSCIHBPTeX8ivuTm1U5fMTR7R2g
+        #로그인 실패시 400 반환
         LoginApi400FailResponse:
             type: object
             properties:
@@ -306,6 +468,7 @@ components:
                 message:
                     type: string
                     example: 아이디나 비밀번호가 틀립니다.
+        #로그아웃 성공시 200반환
         LogoutApi200SuccessResponse:
             type: object
             properties:
@@ -318,6 +481,7 @@ components:
                 message:
                     type: string
                     example: 로그아웃되었습니다.
+        #로그아웃 실패시 400 반환
         LogoutApi400FailResponse:
             type: object
             properties:
@@ -330,6 +494,36 @@ components:
                 message:
                     type: string
                     example: 로그아웃 실패
+
+        #선생님 리스트 반환 성공시 200반환
+        TeacherApi200SuccessResponse:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                    example: true
+                statusCode:
+                    type: integer
+                    example: 200
+                message:
+                    type: string
+                    example: 선생님 찾기 성공
+                data:
+                    $ref: "#/components/schemas/users_teacher_body"
+        #선생님 삭제 성공시 201 반환
+        TeacherDeleteApi201SuccessResponse:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                    example: true
+                statusCode:
+                    type: integer
+                    example: 201
+                message:
+                    type: string
+                    example: 선생님 삭제 성공
+        #선생님 생성 성공시 201 반환
         TeacherApi201SuccessResponse:
             type: object
             properties:
@@ -341,10 +535,11 @@ components:
                     example: 201
                 message:
                     type: string
-                    example: 회원가입 성공
+                    example: 선생님 등록(수정) 성공
                 data:
-                    $ref: "#/components/schemas/TeacherApi201SuccessResponse_data"
-        TeacherApiFailResponse:
+                    $ref: "#/components/schemas/TeacherApiSuccessResponse_data"
+        #선생님 생성 실패시 400 반환
+        TeacherApi400FailResponse:
             type: object
             properties:
                 success:
@@ -355,7 +550,35 @@ components:
                     example: 400
                 message:
                     type: string
-                    example: 선생님 회원가입 실패
+                    example: Bad Request.
+        StudentApi200SuccessResponse:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                    example: true
+                statusCode:
+                    type: integer
+                    example: 200
+                message:
+                    type: string
+                    example: 선생님 찾기 성공
+                data:
+                    $ref: "#/components/schemas/users_student_body"
+        #학생 삭제 성공시 201 반환
+        StudentDeleteApi201SuccessResponse:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                    example: true
+                statusCode:
+                    type: integer
+                    example: 201
+                message:
+                    type: string
+                    example: 학생 삭제 성공
+        #학생 생성 성공시 201 반환
         StudentApi201SuccessResponse:
             type: object
             properties:
@@ -367,10 +590,11 @@ components:
                     example: 201
                 message:
                     type: string
-                    example: 회원가입 성공
+                    example: 학생 등록(수정) 성공
                 data:
-                    $ref: "#/components/schemas/StudentApi201SuccessResponse_data"
-        StudentApiFailResponse:
+                    $ref: "#/components/schemas/StudentApiSuccessResponse_data"
+        #학생 찾기시 에러 400 반환
+        StudentApi400FailResponse:
             type: object
             properties:
                 success:
@@ -381,15 +605,17 @@ components:
                     example: 400
                 message:
                     type: string
-                    example: 학생 회원가입 실패
+                    example: Bad Request.
+        #user등록시 body
         api_users_body:
             properties:
                 email:
                     type: string
-                    example: admin
+                    example: user
                 password:
                     type: string
                     example: test1234
+        #login시 body
         auth_login_body:
             properties:
                 email:
@@ -398,6 +624,7 @@ components:
                 password:
                     type: string
                     example: test1234
+        #관리자 등록시 body
         private_generateAdmin_body:
             properties:
                 email:
@@ -406,6 +633,7 @@ components:
                 password:
                     type: string
                     example: test1234
+        #선생님 등록시 body
         users_teacher_body:
             properties:
                 email:
@@ -438,6 +666,7 @@ components:
                 user_about:
                     type: string
                     example: "hi, i'm james."
+        #학생 등록시 body
         users_student_body:
             properties:
                 email:
@@ -450,9 +679,6 @@ components:
                     type: string
                     example: "Dean"
                 grade:
-                    type: integer
-                    example: 1
-                subject:
                     type: integer
                     example: 1
                 gender:
@@ -470,7 +696,8 @@ components:
                 user_about:
                     type: string
                     example: "hi, i'm ob."
-        UserApi201SuccessResponse_data:
+        #유저 reponse_data
+        UserApiSuccessResponse_data:
             type: object
             properties:
                 id:
@@ -485,7 +712,8 @@ components:
                 school_id:
                     type: integer
                     example: 1
-        SchoolApi200SuccessResponse_data:
+        #학교 reponse_data
+        SchoolApiSuccessResponse_data:
             type: object
             properties:
                 school_id:
@@ -499,7 +727,8 @@ components:
                     type: string
                     format: email
                     example: gacheon.ac.kr
-        TeacherApi201SuccessResponse_data:
+        #선생님 reponse_data
+        TeacherApiSuccessResponse_data:
             type: object
             properties:
                 id:
@@ -535,7 +764,8 @@ components:
                 user_about:
                     type: string
                     example: "hi, i'm james."
-        StudentApi201SuccessResponse_data:
+        #학생 reponse_data
+        StudentApiSuccessResponse_data:
             type: object
             properties:
                 id:
@@ -571,3 +801,44 @@ components:
                 user_about:
                     type: string
                     example: "hi, i'm ob."
+        #선생님 업데이트시 body
+        api_update_teacher_body:
+            type: object
+            properties:
+                subject:
+                    type: integer
+                    example: 2
+                grade:
+                    type: integer
+                    example: 2
+                gender:
+                    type: integer
+                    example: 1
+                email:
+                    type: string
+                    example: teacher
+                user_about:
+                    type: string
+                    example: update test teacher
+                id:
+                    type: string
+                    example: 99
+        #학생 업데이트시 body
+        api_update_student_body:
+            type: object
+            properties:
+                grade:
+                    type: integer
+                    example: 2
+                gender:
+                    type: integer
+                    example: 1
+                email:
+                    type: string
+                    example: student
+                user_about:
+                    type: string
+                    example: update test student
+                id:
+                    type: string
+                    example: 100
