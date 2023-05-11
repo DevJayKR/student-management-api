@@ -1,87 +1,124 @@
 const model = require("./users.model");
 const bcrpyt = require("bcrypt");
-const { BadRequestError, NotFoundError } = require("../common/errors/customError");
 
 module.exports = class UsersService {
-	async generateAdmin({ email, password }) {
-		const isExist = await this.getUserByEmail({ email });
-
-		if (isExist) throw new BadRequestError("이미 사용중인 이메일입니다.", { email });
-
-		const hashedPassword = await bcrpyt.hash(password, 10);
-		await model.generateAdmin({ email, hashedPassword });
-		const newAdmin = await model.getUserByEmail({ email });
-		newAdmin.password = undefined;
-
-		return newAdmin;
-	}
-
-	async createUser({ email, password }) {
-		const isExist = await this.getUserByEmail({ email });
-
-		if (isExist) throw new BadRequestError("이미 사용중인 이메일입니다.", { email });
-
-		const hashedPassword = await bcrpyt.hash(password, 10);
-		await model.createUser({ email, hashedPassword });
-		return await this.getUserByEmail({ email });
-	}
 
 	async getUserByEmail({ email }) {
-		return await model.getUserByEmail({ email });
+		try {
+			const user = await model.getUserByEmail({email});
+			return user;
+		} catch (error) {
+			return error;
+		}
 	}
 
 	async getUserById({ id }) {
-		return await model.getUserById({ id });
+		try {
+			const user = await model.getUserById({ id });	
+			return user;
+		} catch (error) {
+			return error;
+		}
 	}
 
 	async getUsers() {
-		return await model.getUsers();
+		try {
+			const user = await model.getUsers();
+			return user;
+		} catch (error) {
+			return error;
+		}
+	}
+
+	async generateAdmin({ email, password,school_id }) {
+		try {
+			const hashedPassword = await bcrpyt.hash(password, 10);
+			return await model.generateAdmin({ email, hashedPassword,school_id });
+		} catch (error) {
+			return error;
+		}
+	}
+
+	async createUser({ email, password }) {
+		try {
+			const hashedPassword = await bcrpyt.hash(password, 10);
+			return await model.createUser({ email, hashedPassword });
+		} catch (error) {
+			return error;
+		}
 	}
 
 	async createTeacher({email,password,email_address,name,grade,subject,gender,phone_nubmer,school_id}) {
 		try {
 			const hashedPassword = await bcrpyt.hash(password,10);
-			await model.createTeacher({email,hashedPassword,email_address,name,grade,subject,gender,phone_nubmer,school_id});
-			const teacher = await this.getUserByEmail({email});
-			return teacher;	
+			return await model.createTeacher({email,hashedPassword,email_address,name,grade,subject,gender,phone_nubmer,school_id});
 		} catch (error) {
-			console.log(error);
-			throw new Error("Error while creating teacher");
+			return error;
 		}
 	}
 
 	async createStudent({email,password,email_address,name,grade,gender,phone_nubmer,school_id}) {
 		try {
 			const hashedPassword = await bcrpyt.hash(password,10);
-			await model.createStudent({email,hashedPassword,email_address,name,grade,gender,phone_nubmer,school_id});
-			const student = await this.getUserByEmail({email});
-			return student;	
+			return await model.createStudent({email,hashedPassword,email_address,name,grade,gender,phone_nubmer,school_id});
 		} catch (error) {
-			console.log(error);
-			throw new Error("Error while creating student");
+			return error;
 		}
 	}
 
 	async createProfile({user_id,profile_image_url,user_about}){
-		await model.createProfile({user_id,profile_image_url,user_about});
-		return await model.getProfiles();
+		try {
+			return await model.createProfile({user_id,profile_image_url,user_about});	
+		} catch (error) {
+			return error;
+		}
 	}
 
 	async getTeachers(){
-		return await model.getTeachers();
+		try {
+			return await model.getTeachers();	
+		} catch (error) {
+			return error;
+		}
 	}
 
 	async getStudents(){
-		return await model.getStudents();
+		try {
+			return await model.getStudents();	
+		} catch (error) {
+			return error;
+		}
 	}
 
 	async updateTeacher({subject,grade,gender,email,user_about,id}){
-		await model.updateTeachers({subject,grade,gender,email,user_about,id});
-		return await model.getUserById({id});
+		try {
+			return await model.updateTeachers({subject,grade,gender,email,user_about,id});
+		} catch (error) {
+			return error;
+		}
 	}
 
 	async updateStudent({grade,gender,email,user_about,id}){
-		await model.updateTeachers({grade,gender,email,user_about,id});
-		return await model.getUserById({id});
+		try {
+			return await model.updateTeachers({grade,gender,email,user_about,id});	
+		} catch (error) {
+			return error;
+		}
+	}
+
+	async deleteUser({id}){
+		try {
+			return await model.deleteUsers({id});
+		} catch (error) {
+			return error;
+		}
+	}
+
+	async deleteProfile({id}){
+		try {
+			return await model.deleteProfile({id});
+		} catch (error) {
+			return error;
+		}
 	}
 };

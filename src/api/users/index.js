@@ -1,97 +1,34 @@
-const express = require("express");
-const router = express.Router();
+const {Router}= require('express');
+const router = Router();
 const controller = require("./users.controller");
 const validator = require("../common/middlewares/validator");
 const { createSchema } = require("./users.schemas");
 const upload = require('../common/multer');
 
-router.get("/", async (req, res, next) => {
-	try {
-		if (req.query.email) {
-			const { email } = req.query;
-			const user = await controller.getUserByEmail({ email });
-			res.send(user);
-		} else if (req.query.id) {
-			const { id } = req.query;
-			const user = await controller.getUserById({ id });
-			res.send(user);
-		} else {
-			const users = await controller.getUsers();
-			res.send(users);
-		}
-	} catch (e) {
-		next(e);
-	}
-});
+router.get("/", controller.getUsers);
 
-router.post("/private/generateAdmin", validator(createSchema), async (req, res, next) => {
-	const { email, password } = req.body;
-	try {
-		res.send(await controller.generateAdmin({ email, password }));
-	} catch (e) {
-		next(e);
-	}
-});
+router.post("/private/admin", validator(createSchema), controller.generateAdmin);
 
-router.post("/", validator(createSchema), async (req, res, next) => {
-	try {
-		const { email, password } = req.body;
-		const user = await controller.createUser({ email, password });
-		res.send(user);
-	} catch (e) {
-		next(e);
-	}
-});
+router.post("/", validator(createSchema),controller.createUser);
 
-router.post("/teacher",upload.single('image'),async(req,res)=>{
-	const profile_image_url = req.file.path;
-	const {email,password,email_address,name,grade,subject,gender,phone_nubmer,school_id,user_about} = req.body;
-	const teacher = await controller.createTeacher({email,password,email_address,name,grade,subject,gender,phone_nubmer,school_id,profile_image_url,user_about})
-	res.send(teacher);
-});
+router.post("/teacher",upload.single('image'),controller.createTeacher);
 
-router.post("/student",upload.single('image'),async(req,res)=>{
-	const profile_image_url = req.file.path;
-	const {email,password,email_address,name,grade,gender,phone_nubmer,school_id,user_about} = req.body;
-	const student = await controller.createStudent({email,password,email_address,name,grade,gender,phone_nubmer,school_id,profile_image_url,user_about});
-	res.send(student);
-});
+router.post("/student",upload.single('image'),controller.createStudent);
 
-router.get('/teacher',async(req,res)=>{
-	const {id} = req.query;
-	const teacher = await controller.getUserById({id});
-	res.send(teacher);
-});
+// router.get('/teacher',controller.getUserById);
 
-router.get('/student',async(req,res)=>{
-	const {id} = req.query;
-	const student = await controller.getUserById({id});
-	res.send(student);
-});
+// router.get('/student',controller.getUserById);
 
-router.get('/teacher/all',async(req,res)=>{
-	const teacher = await controller.getTeachers();
-	res.send(teacher);
-});
+router.get('/teacher/all',controller.getTeachers);
 
-router.get('/student/all',async(req,res)=>{
-	const student = await controller.getStudents();
-	res.send(student);
-});
+router.get('/student/all',controller.getStudents);
 
-router.put('/teacher',async(req,res)=>{
-	const {id} = req.query;
-	const {subject,grade,gender,email,user_about} = req.body;
-	const teacher = await controller.updateTeacher({subject,grade,gender,email,user_about,id});
-	res.send(teacher);
-});
+router.put('/teacher',controller.updateTeacher);
 
-router.put('/student',async(req,res)=>{
-	const {id} = req.query;
-	const {grade,gender,email,user_about} = req.body;
-	console.log(req.body);
-	const student = await controller.updateStudent({grade,gender,email,user_about,id});
-	res.send(student);
-})
+router.put('/student',controller.updateStudent);
+
+router.delete("/teacher",controller.deleteUser);
+
+router.delete("/student",controller.deleteUser);
 
 module.exports = router;

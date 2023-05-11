@@ -1,4 +1,4 @@
-const { BAD_REQUEST, NOT_FOUND, FORBIDDEN } = require("./httpStatusCode");
+const { BAD_REQUEST, NOT_FOUND, FORBIDDEN, INTERNAL_SERVER_ERROR } = require("./httpStatusCode");
 
 class ApplicationError extends Error {
 	constructor(message, statusCode, data) {
@@ -30,4 +30,11 @@ class ForbiddenError extends ApplicationError {
 	}
 }
 
-module.exports = { BadRequestError, NotFoundError, ForbiddenError };
+class InternalServerError extends ApplicationError{
+	constructor(message,data){
+		super(message,INTERNAL_SERVER_ERROR,data);
+		this.name = this.constructor.name;
+	}
+}
+
+module.exports = { BadRequestError, NotFoundError, ForbiddenError, InternalServerError};

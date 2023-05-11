@@ -11,7 +11,7 @@ const swaggerUi = require("swagger-ui-express");
 const path = require("path");
 const yaml = require("yamljs");
 const swaggerYaml = yaml.load(path.join(__dirname, "src/api/swagger/schoolmanagement-1.0.0.yaml"));
-const errorHandler = require("./src/api/common/middlewares/errorHandler");
+const { errorHandler } = require("./src/api/common/middlewares/errorHandler");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -36,7 +36,6 @@ app.use("/api", api);
 app.get("/", (req, res) => {
 	res.send("Hello, World!");
 });
-
 app.use(errorHandler);
 
 app.listen(port, () => {

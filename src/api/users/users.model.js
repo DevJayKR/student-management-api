@@ -4,30 +4,12 @@ module.exports = {
 	getUsers: async () => {
 		const sql = `SELECT id, email, role_id, school_id FROM users`;
 		const result = await pool.execute(sql);
-
-		return result[0];
-	},
-
-	generateAdmin: async ({ email, hashedPassword }) => {
-		const params = [email, hashedPassword, 5];
-		const sql = `INSERT INTO users(email, password, role_id) VALUES(?,?,?)`;
-		const result = await pool.execute(sql, params);
-		
-		return result[0];
-	},
-
-	createUser: async ({ email, password }) => {
-		const params = [email, password];
-		const sql = `INSERT INTO users(email, password) VALUES(?,?)`;
-
-		const result = await pool.execute(sql, params);
 		return result[0];
 	},
 
 	getUserByEmail: async ({ email }) => {
 		const sql = `SELECT * FROM users where email = ?`;
 		const params = [email];
-
 		const result = await pool.execute(sql, params);
 		return result[0][0];
 	},
@@ -35,9 +17,22 @@ module.exports = {
 	getUserById: async ({ id }) => {
 		const sql = `SELECT * FROM users where id = ?`;
 		const params = [id];
-
 		const result = await pool.execute(sql, params);
 		return result[0][0];
+	},
+
+	generateAdmin: async ({ email, hashedPassword ,school_id}) => {
+		const sql = 'INSERT INTO users(email, password, role_id,school_id) VALUES(?,?,?,?)';
+		const params = [email, hashedPassword, 5,school_id];
+		const result = await pool.execute(sql, params);
+		return result[0];
+	},
+
+	createUser: async ({ email, password }) => {
+		const sql = `INSERT INTO users(email, password) VALUES(?,?)`;
+		const params = [email, password];
+		const result = await pool.execute(sql, params);
+		return result[0];
 	},
 	
 	createTeacher : async({email,hashedPassword,email_address,name,grade,subject,gender,phone_nubmer,school_id})=>{
@@ -75,13 +70,13 @@ module.exports = {
 	},
 	//figma 선생님 리스트
 	getTeachers : async() =>{
-		const sql= 'SELECT * FROM users where role_id = 3';
+		const sql= 'select u.id,u.email,u.email_address,u.name,u.class,u.subject,u.gender,u.phone_number,p.profile_image_url,p.user_about from users u,profiles p where u.id=p.user_id AND u.role_id = 3';
 		const result = await pool.execute(sql);
 		return result[0];
 	},
 	//figma 학생 리스트
 	getStudents : async() =>{
-		const sql = 'SELECT * FROM users where role_id = 2';
+		const sql = 'select u.id,u.email,u.email_address,u.name,u.class,u.gender,u.phone_number,p.profile_image_url,p.user_about from users u,profiles p where u.id=p.user_id AND u.role_id = 2';
 		const result = await pool.execute(sql);
 		return result[0];
 	},
@@ -89,7 +84,14 @@ module.exports = {
 	deleteUsers : async({id}) =>{
 		const sql = 'DELETE FROM users where id=?';
 		const params = [id];
-		const result = await pool.execute(sql);
+		const result = await pool.execute(sql,params);
+		return result[0];
+	},
+
+	deleteProfile: async ({id})  =>{
+		const sql = 'DELETE FROM profiles where user_id =?';
+		const params = [id];
+		const result = await pool.execute(sql,params);
 		return result[0];
 	},
 
