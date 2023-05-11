@@ -7,8 +7,7 @@ module.exports = class SchoolService {
 			const school = await model.create({school_name,school_email});
 			return school;
 		} catch (error) {
-			console.error(error);
-			throw new Error("Error while creating school");
+			return error;
 		}
 	}
 	
@@ -17,8 +16,7 @@ module.exports = class SchoolService {
 			const schools = await model.find();
 			return schools;
 		} catch (error) {
-			console.error(error);
-			throw new Error("Error while finding schools");
+			return error;
 		}
 	}
 
@@ -27,8 +25,7 @@ module.exports = class SchoolService {
 			const school = await model.findbyId({school_id});
 			return school;
 		} catch (error) {
-			console.error(error);
-			throw new Error("Error while finding by school_id");
+			return error;
 		}
 	}
 
@@ -37,8 +34,7 @@ module.exports = class SchoolService {
 			const del = await model.delete({school_id});
 			return del;
 		} catch (error) {
-			console.error(error);
-			throw new Error("Error while deleting school");
+			return error;
 		}
 	}
 };

@@ -1,85 +1,160 @@
 const UsersService = require("./users.service");
 const Service = new UsersService();
 const response = require("../common/response");
-const { NotFoundError } = require("../common/errors/customError");
+const { NotFoundError, InternalServerError } = require("../common/errors/customError");
+const { CREATED, OK } = require("../common/errors/httpStatusCode");
 
 module.exports = {
-	getUsers: async () => {
-		return await Service.getUsers();
-	},
-
-	generateAdmin: async ({ email, password }) => {
-		const newAdmin = await Service.generateAdmin({ email, password });
-		return response.success("어드민 생성 성공", {
-			newAdmin,
-		});
-	},
-
-	createUser: async ({ email, password }) => {
-		const newUser = await Service.createUser({ email, password });
-		return response.success("회원가입 성공", newUser);
-	},
-
-	getUserByEmail: async ({ email }) => {
-		const user = await Service.getUserByEmail({ email });
-
-		if (user) return user;
-		else throw new NotFoundError("존재하지 않는 유저입니다.");
-	},
-
-	getUserById: async ({ id }) => {
-		const user = await Service.getUserById({ id });
-		if (user) return user;
-		else throw new NotFoundError("존재하지 않는 유저입니다.");
-	},
-
-	createTeacher : async({email,password,email_address,name,grade,subject,gender,phone_nubmer,school_id,profile_image_url,user_about}) =>{
+	getUsers: async (req,res,next) => {
 		try {
-			const teacher = await Service.createTeacher({email,password,email_address,name,grade,subject,gender,phone_nubmer,school_id});
+			const data = await Service.getUsers();
+			if(data.length===0) throw new NotFoundError("유저 정보가 존재하지 않습니다.");
+			if(data.name==="Error")throw new InternalServerError("Mysql Error",data);
+			return res.status(OK).send(response.success("모든 유저 찾기 성공",data,OK));
+		} catch (error) {
+			next(error);
+		}
+	},
+
+	generateAdmin: async (req,res,next) => {
+		try {
+			const {email,password,school_id} = req.body;
+			const data = await Service.generateAdmin({ email, password,school_id });
+			if(data.name==="Error") throw new InternalServerError("Mysql Error",data);
+			return res.status(CREATED).send(response.successCreate("어드민 회원가입 성공",CREATED ));
+		} catch (error) {
+			next(error);
+		}
+	},
+
+	createUser: async (req,res,next) => {
+		try {
+			const {email,password} = req.body;
+			const data = await Service.createUser({ email, password });
+			if(data.name==="Error") throw new InternalServerError("Mysql Error",data);
+			return res.status(CREATED).send(response.successCreate("회원가입 성공",CREATED));
+		} catch (error) {
+			next(error)
+		}
+	},
+
+	getUserByEmail: async (req,res,next) => {
+		try {
+			const data = await Service.getUserByEmail({ email });
+			if(data.length===0) throw new NotFoundError("존재하지 않는 유저입니다.");
+			if(data.name==="Error") throw new InternalServerError("Mysql Error",data);
+			return res.status(OK).send(response.success("유저 찾기 성공",data,OK));
+		} catch (error) {
+			next(error);
+		}
+	},
+
+	getUserById: async (req,res,next) => {
+		try {
+			const {id} = req.query;
+			const data = await Service.getUserById({id});
+			if(data.length ===0) throw new NotFoundError("존재하지 않는 유저입니다.");
+			if(data.name==="Error") throw new InternalServerError("Mysql Error",data);
+			return res.status(OK).send(response.success("유저 찾기 성공",user,OK));
+		} catch (error) {
+			next(error);
+		}
+	},
+
+	getTeachers : async(req,res,next) =>{
+		try {
+			const data = await Service.getTeachers();
+			if(data.length===0) throw new NotFoundError("존재하지 않는 유저입니다.");
+			if(data.name==="Error") throw new InternalServerError("Mysql Error",data);
+			return res.status(OK).send(response.success("선생님 찾기 성공",data,OK));
+		} catch (error) {
+			next(error);
+		}
+	},
+
+	getStudents : async(req,res,next) =>{
+		try {
+			const data = await Service.getStudents();
+			if(data.length===0) throw new NotFoundError("존재하지 않는 유저입니다.");
+			if(data.name==="Error") throw new InternalServerError("Mysql Error",data);
+			return res.status(OK).send(response.success("학생 찾기 성공",data,OK));	
+		} catch (error) {
+			next(error);
+		}
+	},
+
+	createTeacher : async(req,res,next) =>{
+		try {
+			const {email,password,email_address,name,grade,subject,gender,phone_nubmer,school_id,user_about} = req.body;
+			const profile_image_url = req.file.path;
+			const data = await Service.createTeacher({email,password,email_address,name,grade,subject,gender,phone_nubmer,school_id});
+			if(data.name ==="Error") throw new InternalServerError("Mysql Error",data);
+			const teacher = await Service.getUserByEmail({email});
+			if(teacher.length===0) throw new NotFoundError("존재하지 않는 유저입니다.");
 			const user_id = teacher.id;
-			const profile = await Service.createProfile({user_id,profile_image_url,user_about});
-			return response.success("선생님 등록 성공",teacher);
+			const profile_data = await Service.createProfile({user_id,profile_image_url,user_about});
+			if(profile_data.name==="Error") throw new InternalServerError("Mysql Error",profile_data);
+			return res.status(CREATED).send(response.successCreate("선생님 등록 성공",CREATED));
 		} catch (error) {
-			console.log(error);
-			if (error.errno === 1062) return response.fail("이미 사용중인 이메일입니다.");
+			next(error);
 		}
 	},
 
-	createStudent : async({email,password,email_address,name,grade,gender,phone_nubmer,school_id,profile_image_url,user_about}) =>{
+	createStudent : async(req,res,next) =>{
 		try {
-			const student = await Service.createStudent({email,password,email_address,name,grade,gender,phone_nubmer,school_id,profile_image_url,user_about});
+			const {email,password,email_address,name,grade,gender,phone_nubmer,school_id,user_about} = req.body;
+			const profile_image_url = req.file.path;
+			const data = await Service.createStudent({email,password,email_address,name,grade,gender,phone_nubmer,school_id});
+			if(data.name ==="Error") throw new InternalServerError("Mysql Error",data);
+			const student = await Service.getUserByEmail({email});
+			if(student.length===0) throw new NotFoundError("존재하지 않는 유저입니다.");
 			const user_id = student.id;
-			const profile = await Service.createProfile({user_id,profile_image_url,user_about});
-			return response.success("학생 등록 성공",student);
-
+			const profile_data = await Service.createProfile({user_id,profile_image_url,user_about});
+			if(profile_data.name ==="Error") throw new InternalServerError("Mysql Error",data);
+			return res.status(CREATED).send(response.successCreate("학생 등록 성공",CREATED));
 		} catch (error) {
-			console.log(error);
-			if (error.errno === 1062) return response.fail("이미 사용중인 이메일입니다.");
+			return next(error);
 		}
 	},
 
-	createProfile : async({user_id,profile_image_url,user_about}) =>{
-		const profile = await Service.createProfile({user_id,profile_image_url,user_about});
-		return response.success("프로필 등록 성공",profile);
+	// createProfile : async({user_id,profile_image_url,user_about}) =>{
+	// 	const profile = await Service.createProfile({user_id,profile_image_url,user_about});
+	// 	return response.success("프로필 등록 성공",profile);
+	// },
+
+	updateTeacher : async(req,res,next) =>{
+		try {
+			const {id} = req.query;
+			const {subject,grade,gender,email,user_about} = req.body;
+			const data = await Service.updateTeacher({subject,grade,gender,email,user_about,id});
+			if(data.name==="Error") throw new InternalServerError("Mysql Error",data);
+			return res.status(CREATED).send(response.successCreate("선생님 업데이트 성공",CREATED));
+		} catch (error) {
+			next(error);
+		}
 	},
 
-	getTeachers : async() =>{
-		const teachers = await Service.getTeachers();
-		return response.success("선생님 찾기 성공",teachers);
+	updateStudent : async(req,res,next)=>{
+		try {
+			const {id} = req.query;
+			const {grade,gender,email,user_about} = req.body;
+			const data = await Service.updateStudent({grade,gender,email,user_about,id});
+			if(data.name==="Error") throw new InternalServerError("Mysql Error",data);
+			return res.status(CREATED).send(response.successCreate("학생 업데이트 성공",CREATED));
+		} catch (error) {
+			next(error);
+		}
 	},
 
-	getStudents : async() =>{
-		const students = await Service.getStudents();
-		return response.success("학생 찾기 성공",students);
+	deleteUser : async(req,res,next) =>{
+		try {
+			const {id} = req.query;
+			const profile_data = await Service.deleteProfile({id});
+			const user_data = await Service.deleteUser({id});
+			if(profile_data==="Error"||user_data ==="Error") throw new InternalServerError("Mysql Error",profile_data||user_data);
+			return res.status(CREATED).send(response.successCreate("유저 삭제 성공",CREATED));
+		} catch (error) {
+			next(error);
+		}
 	},
-
-	updateTeacher : async({subject,grade,gender,email,user_about,id}) =>{
-		const teachers = await Service.updateTeacher({subject,grade,gender,email,user_about,id});
-		return response.success("선생님 업데이트 성공",teachers);
-	},
-
-	updateStudent : async({grade,gender,email,user_about,id})=>{
-		const students = await Service.updateStudent({grade,gender,email,user_about,id});
-		return response.success("학생 업데이트 성공",students);
-	}
 };
