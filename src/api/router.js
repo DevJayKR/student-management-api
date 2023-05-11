@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const school = require("./school/index");
-const users = require("./users/index");
-const auth = require("./auth/index");
+const school = require("./school");
+const users = require("./users");
+const auth = require("./auth");
 
 router.use("/school", school);
 router.use("/users", users);

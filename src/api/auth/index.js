@@ -1,5 +1,5 @@
-const express = require("express");
-const router = express.Router();
+const {Router} =require('express');
+const router  = Router();
 const { JWT_ACCESS_EXPIRATION_TIME, JWT_REFRESH_EXPIRATION_TIME } = process.env;
 const { accessTokenAuth } = require("./middlewares/access-token-auth");
 const { localAuth } = require("./middlewares/local-auth");

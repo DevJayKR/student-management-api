@@ -1,3 +1,4 @@
+const { BAD_REQUEST } = require("../errors/httpStatusCode");
 const response = require("../response");
 const validator = (schema, property) => {
 	return (req, res, next) => {
@@ -10,7 +11,7 @@ const validator = (schema, property) => {
 			const { details } = error;
 			const message = details.map((i) => i.message).join(",");
 
-			res.status(400).send(response.fail(message, {}, 400));
+			res.status(BAD_REQUEST).send(response.fail(message, {}, BAD_REQUEST));
 		}
 	};
 };

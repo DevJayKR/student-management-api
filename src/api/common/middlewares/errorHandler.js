@@ -1,9 +1,8 @@
-module.exports = errorHandler = (err, req, res, next) => {
-	res.json({
-		success: false,
-		statusCode: err.statusCode,
-		name: err.name,
-		message: err.message,
-		data: err.data ?? undefined,
-	});
-};
+const { BAD_REQUEST, NOT_FOUND, FORBIDDEN } = require("../errors/httpStatusCode");
+const response = require('../response');
+module.exports ={
+	errorHandler : (err, req, res, next) => {	
+		console.error(err);
+		res.status(err.statusCode).send(response.fail(err.message,err.data,err.statusCode));
+	}
+}
